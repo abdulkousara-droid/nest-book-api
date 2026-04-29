@@ -1,12 +1,19 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Controller, Get, Param } from '@nestjs/common';
+import { BooksService } from './app.service';
+import { Book } from './FakeDatabase'
 
-@Controller()
-export class AppController {
-  constructor(private readonly appService: AppService) {}
+@Controller('books')
+export class BooksController {
+  constructor(private readonly booksService: BooksService) {}
 
   @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  getHello(): Book[] {
+    return this.booksService.getAllBooks()
+  }
+
+  @Get('getById/:id')
+  getBookById(@Param('id') id: string): Book | undefined {
+    const bookID = +id
+    return this.booksService.findById(bookID)
   }
 }
