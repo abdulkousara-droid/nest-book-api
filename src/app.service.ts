@@ -7,36 +7,48 @@ export class BooksService {
     return books;
   }
 
-  findById(bookId: number): Book | undefined{
+  findById(bookId: number): Book | undefined {
     return books.find((book) => book.id === bookId);
   }
 
-  create(book: Partial<Book>){
-    const newID = books[books.length - 1].id + 1
+  create(book: Partial<Book>) {
+    const newID = books[books.length - 1].id + 1;
 
     const newBook: Book = {
       id: newID,
       author: book.author ?? '',
       title: book.title ?? '',
-      publicationYear: book.publicationYear ?? 0
-    }
+      publicationYear: book.publicationYear ?? 0,
+    };
 
     books.push(newBook);
 
     return newBook;
   }
 
-  update(bookID: number, updateBookFields: Partial<Book>): Book | undefined {
+  update(bookID: number, updatedBookFields: Partial<Book>): Book | undefined {
     const currentBook = books.find((book) => book.id === bookID);
-    const updatedBook = { ...updateBookFields, ...currentBook };
-    books.map((book)=> {
-      if (book.id === bookID) {
-        return updatedBook;
-      }else {
-        return book;
-      }
-    });
+
+    if (!currentBook) {
+      return undefined;
+    }
+    
+    const updatedBook = {
+      id: bookID,
+      title: updatedBookFields.title ?? currentBook.title,
+      author: updatedBookFields.author ?? currentBook.author,
+      publicationYear:
+        updatedBookFields.publicationYear ?? currentBook.publicationYear,
+    };
+
+    books[bookID - 1] = updatedBook;
 
     return updatedBook;
+  }
+
+  delete(bookID: number): Book[] {
+    // books = books.filter((book) => book.id !== bookID);
+    books.splice(bookID - 1, 1);
+    return books;
   }
 }
